@@ -8,5 +8,9 @@ export default {
     banner: '#!/usr/bin/env node\n',
   },
   plugins: [typescript()],
-  external: ['fs', 'node-fetch']
+  external: [
+    'commander',
+    'fs',
+    'node-fetch',
+  ]
 };

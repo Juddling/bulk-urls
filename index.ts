@@ -1,3 +1,4 @@
+import * as program from 'commander';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 
@@ -5,9 +6,6 @@ type Config = {
     headers?: { [key: string]: string };
 }
 
-const config: Config = {
-    headers: {},
-}
 const checks: CheckResult[] = [];
 
 enum ResponseCode {
@@ -29,16 +27,20 @@ type CheckResult = {
 }
 
 function readUrls() {
-    // @ts-ignore
-    const input = fs.readFileSync(process.stdin.fd, 'utf-8');
+    try {
+        // @ts-ignore
+        const input = fs.readFileSync(process.stdin.fd, 'utf-8');
 
-    return input
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line.length > 0);
+        return input
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+    } catch (err) {
+        throw new Error("Error reading from stdin, did you forget to pass a file with URLs?");
+    }
 }
 
-async function checkUrl(url: string) {
+async function checkUrl(url: string, config?: Config) {
     try {
         const response = await fetch(url, {
             headers: config.headers,
@@ -86,13 +88,34 @@ function outputResults(checks: Map<string, CheckResult[]>) {
     });
 }
 
-async function main() {
+function parseConfig(path: string): Config | undefined {
+    if (!fs.existsSync(path)) {
+        console.warn(`Could not read config file at path: ${path}`);
+        return;
+    }
+
+    try {
+        return JSON.parse(fs.readFileSync(path, 'utf8'));
+    } catch (err) {
+        console.error(`Error parsing config file: ${err.message}`);
+    }
+}
+
+async function main(configPath?: string) {
+    const config = configPath ? parseConfig(configPath) : undefined;
     const urls = readUrls();
     console.log(`Checking URLs...`);
-    await Promise.all(urls.map(url => checkUrl(url)));
+    await Promise.all(urls.map(url => checkUrl(url, config)));
     console.log(`Finished checking ${urls.length} URLs`);
     outputResults(groupBy(checks, 'code'));
     console.log(`Done.`);
 }
 
-main();
+program.option('-c, --config <string>', 'Path to a JSON config file: ~/bulk-url-config.json');
+program.parse(process.argv);
+
+main(program.config)
+    .catch((err) => {
+        console.error(err.message);
+        process.exit(1);
+    });

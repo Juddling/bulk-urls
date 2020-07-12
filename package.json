@@ -1,6 +1,12 @@
 {
   "name": "@juddling/bulk-urls",
   "version": "0.1.1",
+  "keywords": [
+    "cli",
+    "url",
+    "seo"
+  ],
+  "repository": "github:Juddling/bulk-urls",
   "main": "dist/main.js",
   "license": "MIT",
   "scripts": {
@@ -8,6 +14,7 @@
   },
   "bin": "dist/main.js",
   "dependencies": {
+    "commander": "^5.1.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {

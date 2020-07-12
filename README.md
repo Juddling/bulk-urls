@@ -22,3 +22,21 @@ With npm:
 ```
 npm i --global @juddling/bulk-urls
 ```
+
+## Config
+You can optionally pass a JSON config file:
+
+```sh
+cat urls.txt | bulk-urls --config ~/bulk-url-config.json
+```
+
+Example:
+
+```json
+{
+    "headers": {
+        // echo "user:pass" | base64
+        "Authorization": "Basic dXNlcjpwYXNzCg=="
+    }
+}
+```
