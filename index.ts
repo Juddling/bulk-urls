@@ -42,7 +42,7 @@ function readUrls() {
 async function checkUrl(url: string, config?: Config) {
     try {
         const response = await fetch(url, {
-            headers: config.headers,
+            headers: config ? config.headers : {},
             redirect: 'manual',
         });
 
@@ -67,7 +67,7 @@ async function checkUrl(url: string, config?: Config) {
 function groupBy<T extends Record<string, any>, K extends keyof T>(xs: T[], key: K): Map<K, T[]> {
     const map = new Map<K, T[]>();
     for (const x of xs) {
-        map.has(x[key]) ? map.get(x[key]).push(x) : map.set(x[key], [x]);
+        map.has(x[key]) ? map.get(x[key])!.push(x) : map.set(x[key], [x]);
     }
     return map;
 }
