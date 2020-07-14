@@ -28,7 +28,6 @@ type CheckResult = {
 
 function readUrls() {
     try {
-        // @ts-ignore
         const input = fs.readFileSync(process.stdin.fd, 'utf-8');
 
         return input
