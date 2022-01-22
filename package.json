@@ -15,7 +15,7 @@
   "bin": "dist/main.js",
   "dependencies": {
     "commander": "^5.1.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^3.1.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^5.0.1",
